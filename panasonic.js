@@ -9,8 +9,8 @@ var PANASONIC_ZERO_SPACE = 400 / MILLISECONDS;
 
 exports.generate = function(address, code) {
   var pwmData = header()
-    .concat(generateData(address))
-    .concat(generateData(code))
+    .concat(generateData(address, 16))
+    .concat(generateData(code, 32))
     .concat(footer());
   return new Float32Array(pwmData);
 }
@@ -19,12 +19,11 @@ function header() {
   return [HEADER_MARK, HEADER_SPACE];
 }
 
-function generateData(input) {
+function generateData(input, maskLength) {
   var output = [];
   var index;
   var mask;
-  var bitLength = data.toString(2).length;
-  for (index = bitLength; index > 0; index--) {
+  for (index = maskLength; index > 0; index--) {
     mask = 1 << (index - 1);
     output.push(PANASONIC_BIT_MARK);
     if (input & mask) {
