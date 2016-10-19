@@ -103,7 +103,7 @@ const POWER_ON_EXPECTED = new Float32Array([
 
 var expect = require('chai').expect;
 
-var panasonic = require('./panasonic');
-var actual = panasonic.generate(0x4004, 0x100BCBD);
+var panasonic = require('./panasonic-ir');
+var actual = panasonic.encode(0x4004, 0x100BCBD);
 
 expect(actual).to.deep.equal(POWER_ON_EXPECTED);
