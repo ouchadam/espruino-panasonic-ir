@@ -16,7 +16,7 @@
     "url": "https://github.com/ouchadam/panasonic-ir/issues"
   },
   "homepage": "https://github.com/ouchadam/panasonic-ir#readme",
-  "dependencies": {
+  "devDependencies": {
     "chai": "^3.5.0"
   }
 }

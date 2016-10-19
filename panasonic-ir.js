@@ -7,7 +7,7 @@ var PANASONIC_BIT_MARK = 502 / MILLISECONDS;
 var PANASONIC_ONE_SPACE = 1244 / MILLISECONDS;
 var PANASONIC_ZERO_SPACE = 400 / MILLISECONDS;
 
-exports.generate = function(address, code) {
+exports.encode = function(address, code) {
   var pwmData = header()
     .concat(generateData(address, 16))
     .concat(generateData(code, 32))
