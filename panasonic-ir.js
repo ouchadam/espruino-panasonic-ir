@@ -3,38 +3,49 @@ var MILLISECONDS = 1000;
 var HEADER_MARK = 3502 / MILLISECONDS;
 var HEADER_SPACE = 1750  / MILLISECONDS;
 
-var PANASONIC_BIT_MARK = 502 / MILLISECONDS;
-var PANASONIC_ONE_SPACE = 1244 / MILLISECONDS;
-var PANASONIC_ZERO_SPACE = 400 / MILLISECONDS;
+var BIT_MARK = 502 / MILLISECONDS;
+var ONE_SPACE = 1244 / MILLISECONDS;
+var ZERO_SPACE = 400 / MILLISECONDS;
+
+var ADDRESS_MASK_BIT_SIZE = 16;
+var CODE_MASK_BIT_SIZE = 32;
 
 exports.encode = function(address, code) {
-  var pwmData = header()
-    .concat(generateData(address, 16))
-    .concat(generateData(code, 32))
+  var payload = header()
+    .concat(generateData(address, ADDRESS_MASK_BIT_SIZE))
+    .concat(generateData(code, CODE_MASK_BIT_SIZE))
     .concat(footer());
-  return new Float32Array(pwmData);
+  return new Float32Array(payload);
 }
 
 function header() {
   return [HEADER_MARK, HEADER_SPACE];
 }
 
-function generateData(input, maskLength) {
-  var output = [];
+function generateData(input, maskBitSize) {
+  return iterateMask(input, maskBitSize, mark, space);
+}
+
+var mark = function() {
+  return BIT_MARK;
+}
+
+var space = function(masked) {
+  return masked ? ONE_SPACE : ZERO_SPACE;
+}
+
+function iterateMask(input, maskBitSize, markCallback, spaceCallback) {
   var index;
   var mask;
-  for (index = maskLength; index > 0; index--) {
+  var output = [];
+  for (index = maskBitSize; index > 0; index--) {
     mask = 1 << (index - 1);
-    output.push(PANASONIC_BIT_MARK);
-    if (input & mask) {
-      output.push(PANASONIC_ONE_SPACE);
-    } else {
-      output.push(PANASONIC_ZERO_SPACE);
-    }
+    output.push(markCallback());
+    output.push(spaceCallback(input & mask));
   }
   return output;
 }
 
 function footer() {
-  return [PANASONIC_BIT_MARK, 0];
+  return [BIT_MARK, 0];
 }
