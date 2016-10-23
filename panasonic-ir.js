@@ -34,14 +34,14 @@ var space = function(masked) {
   return masked ? ONE_SPACE : ZERO_SPACE;
 }
 
-function iterateMask(input, maskBitSize, markCallback, spaceCallback) {
+function iterateMask(input, maskBitSize, mark, space) {
   var index;
   var mask;
   var output = [];
   for (index = maskBitSize; index > 0; index--) {
     mask = 1 << (index - 1);
-    output.push(markCallback());
-    output.push(spaceCallback(input & mask));
+    output.push(mark());
+    output.push(space(input & mask));
   }
   return output;
 }
